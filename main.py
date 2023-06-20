@@ -24,7 +24,7 @@ master = weekday_master | kohls_master | everlane_master | af_master | cos_maste
 search_results = query_master(master)
 
 item_to_open = ''
-search_history = []
+search_history = set()
 while not item_to_open == "q":
   item_to_open = input(
     "Enter the number of an item to view, 'q' to quit, or '$' to search for a different keyword: "
@@ -55,6 +55,7 @@ while not item_to_open == "q":
   print("Opening product page...")
   item_viewed_link = master[item_name]['link']
   webbrowser.open(item_viewed_link)
-  search_history.append((item_name, item_viewed_link))
+  search_history.add((item_name, item_viewed_link))
 
   print_search_results(search_results)
+  num = None    # need to test this method of resetting num

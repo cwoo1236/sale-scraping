@@ -1,3 +1,4 @@
+from scrape_everlane_sale import scrape_everlane_sale
 def parse_or(tokens):
   (t, left) = parse_and(tokens)
   if t and t[0] == 'OR':
@@ -5,7 +6,6 @@ def parse_or(tokens):
     return (tt, ('OR', left, right))
   else:
     return (t, left)
-
 
 def parse_and(tokens):
   (t, left) = parse_id(tokens)
@@ -15,13 +15,11 @@ def parse_and(tokens):
   else:
     return (t, left)
 
-
 def parse_id(tokens):
   if tokens:
     return (tokens[1:], tokens[0])
   else:
     raise SyntaxError("Unexpected end of input")
-
 
 def eval_or(ast, master):
   if ast[0] == 'OR':
@@ -36,7 +34,6 @@ def eval_or(ast, master):
   elif 'ID' in ast[0]:
     return eval_id(ast, master)
 
-
 def eval_id(ast, master):
   if not ast[0] == 'ID':
     raise SyntaxError("Not ID")
@@ -44,22 +41,19 @@ def eval_id(ast, master):
     kw = ast[1]  # the search term
     return dict([(i + 1, (k, master[k]['price'])) for i, k in enumerate(master)
                  if kw in k.lower()])
-
-
+  
 def eval_and(ast, master):
   if not ast[0] == 'AND':
     raise SyntaxError("Expected AND; got %s" % (ast[0]))
   else:
-    results1 = eval_id(ast[1], master).items()
-    results2 = eval_id(ast[2], master).items()
+    results1 = eval_or(ast[1], master).items()
+    results2 = eval_or(ast[2], master).items()
     return dict(results1 & results2)
-
 
 def tokenize(input):
   fun = lambda x: 'OR' if x == '|' else 'AND' if x == '&' else ('ID', x)
   tokens = input.split(' ')
   return list(map(fun, tokens))
-
 
 def print_search_results(search_tuples):
   print("RESULTS FOUND: %d" % (len(search_tuples)))
@@ -67,7 +61,6 @@ def print_search_results(search_tuples):
   for k, v in search_tuples.items():
     print("%d | %s: %s" % (k, v[0], v[1]))
   print("-------------------------")
-
 
 def query_master(master):
   search_tuples = {}
@@ -100,3 +93,9 @@ def print_search_results(search_tuples):
   for k, v in search_tuples.items():
     print("%d | %s: %s" % (k, v[0], v[1]))
   print("-------------------------")
+
+# (_, ast) = parse_or(tokenize("cotton & cap & arket | levi"))
+# print(ast)
+# m = scrape_everlane_sale()
+# res = eval_or(ast, m)
+# print(res)

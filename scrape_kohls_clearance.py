@@ -1,5 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
+import re
 
 def scrape_kohls_clearance():
 
@@ -13,7 +14,7 @@ def scrape_kohls_clearance():
     
     # Parse the HTML content using BeautifulSoup
     soup = BeautifulSoup(response.content, "html.parser")
-    blocks = soup.find_all('div', class_="prod_img_block")
+    blocks = soup.find_all('li', class_=re.compile("products_grid.*"))
     
     if not blocks:
       break
@@ -25,11 +26,14 @@ def scrape_kohls_clearance():
       link = block.find('a').get('href')
       price_raw = block.find('span', class_='prod_price_amount red_color')
       if price_raw:
-        price = price_raw.string
+          price = price_raw.string
       else:
-        price = "UNKN"
-      master[item] = {'price': price, 'link': link, 'from': 'kohls'}
-      # print("%s | %s" % (item, price))
+          price = "UNKN"
+
+      img_link = str(block.find('img').get('data-herosrc'))
+      color = re.search("\d+(.*)\?", img_link).group(1)
+      color = color.replace('_', ' ').strip()
+      master[item] = {'price': price, 'link': link, 'color': color, 'from': 'kohls'}
   
     pg_num += 1
 

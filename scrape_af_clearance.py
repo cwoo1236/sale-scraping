@@ -29,7 +29,7 @@ def scrape_af_clearance():
     print("Loading Abercrombie clearance page %d..." % (pg_num + 1))
 
     for block in blocks:
-      name = block.find('img').get('alt')
+      name = "(A&F) " + block.find('img').get('alt')
       color = name.split(', ')[-1]
       price = block.find(
         'span', {
