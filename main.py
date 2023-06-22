@@ -5,11 +5,13 @@ from scrape_everlane_sale import scrape_everlane_sale
 from scrape_af_clearance import scrape_af_clearance
 from scrape_cos_sale import scrape_cos_sale
 from scrape_arket_sale import scrape_arket_sale
+from scrape_dicks_sneakers import scrape_dicks_sneakers
 import webbrowser
 
 # Scrape & format different sites
 # Macy's clearance alone is like 56k mens items
 # Superdry doesn't seem to be willing to give html
+# Nordstrom blocks bots
 
 weekday_master = scrape_weekday_sale()
 kohls_master = scrape_kohls_clearance()
@@ -17,9 +19,10 @@ everlane_master = scrape_everlane_sale()
 af_master = scrape_af_clearance()
 cos_master = scrape_cos_sale()
 arket_master = scrape_arket_sale()
+# dicks_master = scrape_dicks_sneakers()
 
 # Put all them together and search
-master = weekday_master | kohls_master | everlane_master | af_master | cos_master | arket_master
+master = weekday_master | kohls_master | everlane_master | af_master | cos_master | arket_master # | dicks_master
 
 search_results = query_master(master)
 
@@ -54,6 +57,4 @@ while not item_to_open == "q":
     print("Invalid input. Try again")
     continue
 
-  
-
-  
+# export_dict = input("Export search")

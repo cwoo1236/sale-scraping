@@ -8,7 +8,6 @@ def scrape_dicks_sneakers():
 
     while True:
         url = "https://www.dickssportinggoods.com/f/sale-mens-athletic-sneakers?pageNumber=%d&pageSize=96" % (pg_num)
-        print(url)
         with sync_playwright() as playwright:
             headers = {
         'User-Agent':
