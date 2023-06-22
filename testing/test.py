@@ -1,33 +1,18 @@
-import requests
+from playwright.sync_api import sync_playwright
 from bs4 import BeautifulSoup
-import re
 
 
-master = {}
-ppp = 120
-pg_num = 0
+with sync_playwright() as playwright:
+      browser = playwright.chromium.launch()
+      page = browser.new_page()
+      page.goto('https://www.weekday.com/en/sale/men/all.html')
+      print("Loading Weekday sale...")
 
+      # Wait for any dynamic content to load
+      print("Scrolling down...")
+      page.wait_for_load_state('networkidle')
 
-url = "https://www.kohls.com/catalog/clearance-mens.jsp?CN=Promotions:Clearance+Gender:Mens&cc=sale-TN2.0-S-Clearance-Mens&PPP=%d&WS=%d" % (ppp, ppp * pg_num)
-response = requests.get(url)
-
-# Parse the HTML content using BeautifulSoup
-soup = BeautifulSoup(response.content, "html.parser")
-blocks = soup.find_all('li', class_=re.compile("products_grid.*"))
-
-
-for block in blocks:
-    item = block.find('img').get('title')
-    link = block.find('a').get('href')
-    price_raw = block.find('span', class_='prod_price_amount red_color')
-    if price_raw:
-        price = price_raw.string
-    else:
-        price = "UNKN"
-
-    img_link = str(block.find('img').get('data-herosrc'))
-    color = re.search("\d+(.*)\?", img_link).group(1)
-    color = color.replace('_', ' ').strip()
-    master[item] = {'price': price, 'link': link, 'color': color, 'from': 'kohls'}
-
-pg_num += 1
+      # Get the HTML content
+      html = page.inner_html('body')
+      # Parse the HTML content using BeautifulSoup
+      soup = BeautifulSoup(html, "html.parser")

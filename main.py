@@ -5,13 +5,12 @@ from scrape_everlane_sale import scrape_everlane_sale
 from scrape_af_clearance import scrape_af_clearance
 from scrape_cos_sale import scrape_cos_sale
 from scrape_arket_sale import scrape_arket_sale
-# from selenium import webdriver
-# from selenium.webdriver.common.keys import Keys
-# import time
 import webbrowser
 
 # Scrape & format different sites
 # Macy's clearance alone is like 56k mens items
+# Superdry doesn't seem to be willing to give html
+
 weekday_master = scrape_weekday_sale()
 kohls_master = scrape_kohls_clearance()
 everlane_master = scrape_everlane_sale()
@@ -21,10 +20,11 @@ arket_master = scrape_arket_sale()
 
 # Put all them together and search
 master = weekday_master | kohls_master | everlane_master | af_master | cos_master | arket_master
+
 search_results = query_master(master)
 
 item_to_open = ''
-search_history = set()
+search_history = []
 while not item_to_open == "q":
   item_to_open = input(
     "Enter the number of an item to view, 'q' to quit, or '$' to search for a different keyword: "
@@ -37,25 +37,23 @@ while not item_to_open == "q":
     break
   elif item_to_open == '$':
     search_results = query_master(master)
-
-  if item_to_open.isnumeric():
+  elif item_to_open.isnumeric():
     num = int(item_to_open) 
-  elif item_to_open == '$':
-    pass
+    try:
+      item_name = search_results[num][0]
+    except KeyError:
+      print("Invalid number given. Try again")
+      continue
+    print("Opening product page...")
+    item_viewed_link = master[item_name]['link']
+    webbrowser.open(item_viewed_link)
+    search_history.append((item_name, item_viewed_link))
+  
+    print_search_results(search_results)
   else:
     print("Invalid input. Try again")
     continue
 
-  try:
-    item_name = search_results[num][0]
-  except KeyError:
-    print("Invalid number given. Try again")
-    continue
+  
 
-  print("Opening product page...")
-  item_viewed_link = master[item_name]['link']
-  webbrowser.open(item_viewed_link)
-  search_history.add((item_name, item_viewed_link))
-
-  print_search_results(search_results)
-  num = None    # need to test this method of resetting num
+  

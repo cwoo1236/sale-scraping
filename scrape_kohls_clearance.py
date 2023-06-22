@@ -23,7 +23,7 @@ def scrape_kohls_clearance():
       
     for block in blocks:
       item = block.find('img').get('title')
-      link = block.find('a').get('href')
+      link = "https://www.kohls.com" + block.find('a').get('href')
       price_raw = block.find('span', class_='prod_price_amount red_color')
       if price_raw:
           price = price_raw.string

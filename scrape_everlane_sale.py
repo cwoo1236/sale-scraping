@@ -21,6 +21,6 @@ def scrape_everlane_sale():
       found.add(p['displayName'])
       link = "https://www.everlane.com/products/" + p['permalink']
       price = '$' + p['price'] + '*'    # price after discount isn't given in the BS4 output:?
-      master[name] = {'price': price, 'link': link}
+      master[name] = {'price': price, 'link': link, 'from': 'Everlane'}
   
   return master

@@ -25,12 +25,12 @@ def scrape_cos_sale():
     else:
       print("Loading COS sale page %d..." % (pg_num))
       
-    blocks = soup.find_all('div', class_="o-product productTrack")
-  
+    blocks = soup.find_all('div', class_="column")
+
     for block in blocks:
-      color = block.find('input').get('value').title()
-      name = "(COS) %s - %s" % (block.find('h2').text.title(), color)
-      price = block.find('span', class_='is-reduced').text
+      color = block.find('span', class_='colorName').text.title()
+      name = "(COS) %s - %s" % (block.find('span', class_='productName').text.title(), color)
+      price = "$%s0" % (block.find('span', class_='price').text)
       link = block.find('a').get('href')
       master[name] = {'price': price, 'link': link, 'from': 'COS', 'color': color}
   

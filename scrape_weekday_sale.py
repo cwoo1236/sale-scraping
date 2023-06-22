@@ -14,7 +14,7 @@ def scrape_weekday_sale():
       # Wait for any dynamic content to load
       # Adjust the timeout as needed
       print("Scrolling down...")
-      page.wait_for_timeout(2000)
+      page.wait_for_timeout(5000)
 
       # Get the HTML content
       html = page.inner_html('body')
